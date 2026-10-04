@@ -2,11 +2,11 @@ document.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     SzoEllenorzes();
     return;
-  } else if (/^[a-zA-Z]$/.test(e.key)) {
-    BetuBerak(e.key);
-    return;
   } else if (e.key === "Backspace") {
     Torol();
+    return;
+  } else if (/^[a-zA-Z\u00C0-\u00FF\u0150-\u0151\u0170-\u0171]+$/.test(e.key)) {
+    BetuBerak(e.key);
     return;
   }
 });
@@ -17,6 +17,7 @@ let tipp = "";
 let sor = 1;
 let oszlop = -1;
 let cellak = document.getElementsByClassName("cell");
+let billentyuk = document.getElementsByClassName("key");
 let mostaniSor = [];
 let probaDarab = 6;
 
@@ -39,8 +40,17 @@ function SzoKivalaszt() {
 
 function SzoEllenorzes() {
   if (tipp === tippelendoSzo) {
-    Mutat(true);
+    Szinez();
+    setTimeout(() => {
+      Mutat(true);
+    }, 100);
   } else if (tipp.length === 5) {
+    if (!szavak.includes(tipp)) {
+      //szó szerepel-e az adatbázisban ellenőrzése
+      alert("A megadott szó nem szerepel a felhasználható szavak listájában!");
+      return;
+    }
+
     Mutat(false);
     sor++;
     Szinez();
@@ -74,6 +84,7 @@ function Szinez() {
     }
 
     //delay berakni
+    //also billentyűk színezést berakni
   }
 }
 
@@ -105,3 +116,5 @@ function Mutat(nyert) {
     return;
   }
 }
+
+function UjJatek(params) {}
