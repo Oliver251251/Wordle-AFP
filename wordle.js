@@ -63,6 +63,15 @@ function SzoEllenorzes() {
   }
 }
 
+function DulikaltBetu() {
+  //lehet nem is kell
+  let db = [0, 0, 0, 0, 0];
+  for (let i = 0; i < tipp.length; i++) {
+    if (tippelendoSzo.includes(tipp[i])) {
+    }
+  }
+}
+
 function BetuBerak(e) {
   if (tipp.length === 5) {
     return;
@@ -74,17 +83,46 @@ function BetuBerak(e) {
 }
 
 function Szinez() {
+  // A megoldásban található betűk számolása
+  let maradekBetuk = {};
+
+  for (let i = 0; i < tippelendoSzo.length; i++) {
+    let betu = tippelendoSzo[i];
+
+    if (maradekBetuk[betu]) {
+      maradekBetuk[betu]++;
+    } else {
+      maradekBetuk[betu] = 1;
+    }
+  }
+
+  // 1. kör: először a ZÖLD betűket keressük
   for (let i = 0; i < mostaniSor.length; i++) {
     if (mostaniSor[i].innerHTML === tippelendoSzo[i]) {
       mostaniSor[i].classList.add("correct");
-    } else if (tippelendoSzo.includes(mostaniSor[i].innerHTML)) {
+
+      // Ezt a betűt már felhasználtuk
+      maradekBetuk[mostaniSor[i].innerHTML]--;
+    }
+  }
+
+  // 2. kör: ezután a SÁRGA / SZÜRKE betűket
+  for (let i = 0; i < mostaniSor.length; i++) {
+    // Ha már zöld, nem kell újra ellenőrizni
+    if (mostaniSor[i].classList.contains("correct")) {
+      continue;
+    }
+
+    let betu = mostaniSor[i].innerHTML;
+
+    if (maradekBetuk[betu] > 0) {
       mostaniSor[i].classList.add("present");
+
+      // Ezt a példányt is felhasználtuk
+      maradekBetuk[betu]--;
     } else {
       mostaniSor[i].classList.add("absent");
     }
-
-    //delay berakni
-    //also billentyűk színezést berakni
   }
 }
 
