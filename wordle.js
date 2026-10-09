@@ -5,7 +5,15 @@ document.addEventListener("keydown", function (e) {
   } else if (e.key === "Backspace") {
     Torol();
     return;
-  } else if (/^[a-zA-Z\u00C0-\u00FF\u0150-\u0151\u0170-\u0171]+$/.test(e.key)) {
+  } else if (/^[A-ZÁÉÍÓÖŐÚÜŰa-záéíóöőúüű\s]+$/.test(e.key)) {
+    if (e.ctrlKey || e.metaKey) {
+      return;
+    }
+
+    if (e.key.length !== 1 || e.altKey) {
+      return;
+    }
+
     BetuBerak(e.key);
     return;
   }
@@ -59,15 +67,6 @@ function SzoEllenorzes() {
 
     if (probaDarab === 0) {
       Mutat(false);
-    }
-  }
-}
-
-function DulikaltBetu() {
-  //lehet nem is kell
-  let db = [0, 0, 0, 0, 0];
-  for (let i = 0; i < tipp.length; i++) {
-    if (tippelendoSzo.includes(tipp[i])) {
     }
   }
 }
@@ -141,7 +140,6 @@ function SorValt() {
   for (let i = (sor - 1) * 5; i < sor * 5; i++) {
     mostaniSor.push(cellak[i]);
   }
-  //console.log(mostaniSor); //kivenni teszt után
   oszlop = -1;
   tipp = "";
 }
@@ -155,4 +153,6 @@ function Mutat(nyert) {
   }
 }
 
-function UjJatek(params) {}
+function UjJatek() {
+  window.location.reload();
+}
