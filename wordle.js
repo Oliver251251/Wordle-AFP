@@ -1,4 +1,6 @@
-document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", EventF);
+
+function EventF(e) {
   if (e.key === "Enter") {
     SzoEllenorzes();
     return;
@@ -17,7 +19,8 @@ document.addEventListener("keydown", function (e) {
     BetuBerak(e.key);
     return;
   }
-});
+}
+
 
 let szavak = [];
 let tippelendoSzo = "";
@@ -55,11 +58,17 @@ function SzoEllenorzes() {
   } else if (tipp.length === 5) {
     if (!szavak.includes(tipp)) {
       //szó szerepel-e az adatbázisban ellenőrzése
-      alert("A megadott szó nem szerepel a felhasználható szavak listájában!");
+      let szoveg = document.getElementsByClassName("sub")[0];
+      szoveg.innerHTML = "A megadott szó nem szerepel a felhasználható szavak listájában!";
+      szoveg.classList.add("present");
+      setTimeout(() => {
+        szoveg.classList.remove("present");
+        szoveg.innerHTML = "Találd ki az 5 betűs szót 6 próbálkozásból";
+      }, 3000);
       return;
     }
 
-    Mutat(false);
+    //Mutat(false);
     sor++;
     Szinez();
     SorValt();
@@ -147,11 +156,90 @@ function SorValt() {
 function Mutat(nyert) {
   //van értelme ennek?
   if (nyert) {
-    alert("nyert");
+    FelugroAblak("Nyertél!");
 
-    return;
+  }else{
+    FelugroAblak("Vesztettél");
   }
+
+  document.removeEventListener("keydown", EventF);
 }
+
+
+function FelugroAblak(
+    szovegKi,
+    nyert = false,
+    megoldas = "",
+    ujJatekFelirat = "Új játék",
+    bezarasFelirat = "Bezárás"
+) {
+    // Háttér
+    const felugro = document.createElement("div");
+    felugro.id = "end-modal";
+
+    // Ablak tartalma
+    const tartalom = document.createElement("div");
+    tartalom.classList.add("modal-content");
+
+    // Cím
+    const cim = document.createElement("h2");
+    cim.textContent = nyert ? "Gratulálok!" : "Játék vége";
+
+    // Eredmény szövege
+    const szoveg = document.createElement("p");
+    szoveg.textContent = szovegKi;
+
+    // Helyes megoldás (opcionális)
+    if (megoldas) {
+        const megoldasElem = document.createElement("div");
+        megoldasElem.id = "solution";
+        megoldasElem.textContent = megoldas;
+        tartalom.appendChild(cim);
+        tartalom.appendChild(szoveg);
+        tartalom.appendChild(megoldasElem);
+    } else {
+        tartalom.appendChild(cim);
+        tartalom.appendChild(szoveg);
+    }
+
+    // Gombok tárolója
+    const gombok = document.createElement("div");
+    gombok.classList.add("modal-buttons");
+
+    // Új játék gomb
+    const ujJatekGomb = document.createElement("button");
+    ujJatekGomb.id = "play-again";
+    ujJatekGomb.textContent = ujJatekFelirat;
+
+    ujJatekGomb.addEventListener("click", () => {
+        felugro.remove();
+
+        // Ha van globális új játék függvényed, itt hívhatod meg.
+        if (typeof UjJatek === "function") {
+            UjJatek();
+        }
+    });
+
+    // Bezárás gomb
+    const bezarasGomb = document.createElement("button");
+    bezarasGomb.id = "close-modal";
+    bezarasGomb.textContent = bezarasFelirat;
+
+    bezarasGomb.addEventListener("click", () => {
+        felugro.remove();
+    });
+
+    // Összeállítás
+    gombok.appendChild(ujJatekGomb);
+    gombok.appendChild(bezarasGomb);
+
+    tartalom.appendChild(gombok);
+    felugro.appendChild(tartalom);
+    document.body.appendChild(felugro);
+
+    return felugro;
+}
+
 
 function UjJatek() {
   window.location.reload();
